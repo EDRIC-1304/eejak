@@ -47,41 +47,53 @@ export default function Footer() {
         <div>
           <h3 className="font-semibold">Contact</h3>
 
-          <div className="mt-4 space-y-2 text-sm text-gray-400">
-            <p>
+          <div className="mt-4 space-y-2 text-sm text-gray-400 hover:hover:text-white">
+            <a
+              href="https://maps.app.goo.gl/oUt2JYMqcf3tq7aG7"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 block leading-7 text-gray-400 transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.7)]"
+            >
               305 Gera Imperium Grand Patto
               <br />
-              Panjim Goa India
-            </p>
+              Panjim, Goa, India
+            </a>
+            <a
+              href="mailto:info@eejak.com"
+              className="block text-gray-400 hover:hover:text-white"
+            >
+              info@eejak.com
+            </a>
 
-            <p>info@eejak.com</p>
-
-            <p>+91 08070004400</p>
+            <a
+              href="tel:+9108070004400"
+              className="block text-gray-400 hover:hover:text-white"
+            >
+              +91 08070004400
+            </a>
 
             {/* Social Media */}
             <div className="mt-5 flex items-center gap-4">
+              <a
+                href="https://www.linkedin.com/company/eejak-technologies/home/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="text-gray-500 transition-all duration-300 hover:scale-110 hover:text-blue-400 hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]"
+              >
+                <FaLinkedinIn size={22} />
+              </a>
 
-  <a
-    href="https://www.linkedin.com/company/eejak-technologies/home/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="LinkedIn"
-    className="text-gray-500 transition-all duration-300 hover:scale-110 hover:text-blue-400 hover:drop-shadow-[0_0_10px_rgba(96,165,250,0.8)]"
-  >
-    <FaLinkedinIn size={22} />
-  </a>
-
-  <a
-    href="https://www.facebook.com/EejakTechnologies/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Facebook"
-    className="text-gray-500 transition-all duration-300 hover:scale-110 hover:text-blue-500 hover:drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]"
->
-    <FaFacebook size={22} />
-  </a>
-
-</div>
+              <a
+                href="https://www.facebook.com/EejakTechnologies/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-gray-500 transition-all duration-300 hover:scale-110 hover:text-blue-500 hover:drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]"
+              >
+                <FaFacebook size={22} />
+              </a>
+            </div>
           </div>
         </div>
       </div>
