@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const contactRoutes = require("./routes/contactRoutes");
 const enquiryRoutes = require("./routes/enquiryRoutes");
+const authRoutes = require("./routes/authRoutes");
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/api/contact", contactRoutes);
 app.use("/api/project-enquiries", enquiryRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
   res.json({

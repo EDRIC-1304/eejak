@@ -1,32 +1,33 @@
-.contact-page {
+.auth-page {
   min-height: 100vh;
-  padding: 60px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
   background: #f5f5f5;
 }
 
-.contact-container {
+.auth-card {
   width: 100%;
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 40px;
+  max-width: 450px;
   background: #ffffff;
+  padding: 40px;
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  box-sizing: border-box;
 }
 
-.contact-container h1 {
+.auth-card h1 {
   margin: 0 0 10px;
-  font-size: 36px;
+  font-size: 32px;
 }
 
-.contact-subtitle {
+.auth-subtitle {
   margin-bottom: 30px;
   color: #666;
 }
 
 .form-group {
-  margin-bottom: 22px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
@@ -35,28 +36,21 @@
   font-weight: 600;
 }
 
-.form-group input,
-.form-group textarea {
+.form-group input {
   width: 100%;
   padding: 13px 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 16px;
-  font-family: inherit;
   box-sizing: border-box;
 }
 
-.form-group textarea {
-  resize: vertical;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
+.form-group input:focus {
   outline: none;
   border-color: #222;
 }
 
-.contact-container button {
+.auth-card button {
   width: 100%;
   padding: 14px;
   border: none;
@@ -67,17 +61,9 @@
   cursor: pointer;
 }
 
-.contact-container button:disabled {
+.auth-card button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.success-message {
-  margin-bottom: 20px;
-  padding: 12px;
-  border-radius: 6px;
-  background: #e5f7e9;
-  color: #176b2c;
 }
 
 .error-message {
@@ -86,4 +72,16 @@
   border-radius: 6px;
   background: #ffe5e5;
   color: #b00020;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 20px;
+  color: #666;
+}
+
+.auth-switch a {
+  color: #111;
+  font-weight: 600;
+  text-decoration: none;
 }

@@ -2,19 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import "./contact.css";
+import "../login/auth.css";
 
-export default function ContactPage() {
+export default function SignupPage() {
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    phone: "",
-    company: "",
-    address: "",
+    name: "",
+    email: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
@@ -29,25 +28,16 @@ export default function ContactPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading(true);
-    setMessage("");
     setError("");
+    setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-
       const response = await fetch(
-        "http://localhost:5000/api/contact",
+        "http://localhost:5000/api/auth/signup",
         {
-          method: "PUT",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(formData),
         }
@@ -57,13 +47,18 @@ export default function ContactPage() {
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Failed to save contact details"
+          data.message || "Signup failed"
         );
       }
 
-      setMessage(
-        "Contact details saved successfully."
+      localStorage.setItem("token", data.token);
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
       );
+
+      router.push("/");
     } catch (error) {
       setError(error.message);
     } finally {
@@ -72,19 +67,13 @@ export default function ContactPage() {
   };
 
   return (
-    <main className="contact-page">
-      <div className="contact-container">
-        <h1>Contact Us</h1>
+    <main className="auth-page">
+      <div className="auth-card">
+        <h1>Create Account</h1>
 
-        <p className="contact-subtitle">
-          Tell us a little about yourself.
+        <p className="auth-subtitle">
+          Create your account
         </p>
-
-        {message && (
-          <div className="success-message">
-            {message}
-          </div>
-        )}
 
         {error && (
           <div className="error-message">
@@ -94,49 +83,46 @@ export default function ContactPage() {
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="phone">
-              Phone Number
-            </label>
+            <label htmlFor="name">Name</label>
 
             <input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Enter your phone number"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="company">
-              Company
-            </label>
-
-            <input
-              id="company"
-              name="company"
+              id="name"
+              name="name"
               type="text"
-              value={formData.company}
+              value={formData.name}
               onChange={handleChange}
-              placeholder="Enter your company"
+              placeholder="Enter your name"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="address">
-              Address
+            <label htmlFor="email">Email</label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">
+              Password
             </label>
 
-            <textarea
-              id="address"
-              name="address"
-              value={formData.address}
+            <input
+              id="password"
+              name="password"
+              type="password"
+              value={formData.password}
               onChange={handleChange}
-              placeholder="Enter your address"
-              rows={5}
+              placeholder="Enter your password"
+              minLength={6}
               required
             />
           </div>
@@ -146,10 +132,15 @@ export default function ContactPage() {
             disabled={loading}
           >
             {loading
-              ? "Saving..."
-              : "Submit"}
+              ? "Creating Account..."
+              : "Sign Up"}
           </button>
         </form>
+
+        <p className="auth-switch">
+          Already have an account?{" "}
+          <a href="/login">Login</a>
+        </p>
       </div>
     </main>
   );

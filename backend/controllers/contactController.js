@@ -1,14 +1,8 @@
-const User = require("../models/User");
+const Contact = require("../models/Contact");
 
 const updateContactDetails = async (req, res) => {
   try {
-    const { userId, phone, company, address } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({
-        message: "User ID is required",
-      });
-    }
+    const { phone, company, address } = req.body;
 
     if (!phone || !company || !address) {
       return res.status(400).json({
@@ -16,35 +10,30 @@ const updateContactDetails = async (req, res) => {
       });
     }
 
-    const user = await User.findByIdAndUpdate(
-      userId,
+    const contact = await Contact.findOneAndUpdate(
+      { userId: req.userId },
       {
-        phone,
-        company,
-        address,
-        contactCompleted: true,
+        userId: req.userId,
+        phone: phone.trim(),
+        company: company.trim(),
+        address: address.trim(),
       },
       {
         new: true,
+        upsert: true,
         runValidators: true,
       }
     );
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
-
-    res.status(200).json({
-      message: "Contact details updated successfully",
-      contactCompleted: user.contactCompleted,
+    return res.status(200).json({
+      message: "Contact details saved successfully",
+      contact,
     });
   } catch (error) {
     console.error("Contact update error:", error);
 
-    res.status(500).json({
-      message: "Failed to update contact details",
+    return res.status(500).json({
+      message: "Failed to save contact details",
     });
   }
 };

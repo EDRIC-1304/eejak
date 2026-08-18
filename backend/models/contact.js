@@ -1,31 +1,27 @@
 const mongoose = require("mongoose");
 
-const projectEnquirySchema = new mongoose.Schema(
+const contactSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      unique: true,
     },
 
-    projectType: {
+    phone: {
       type: String,
       required: true,
       trim: true,
     },
 
-    description: {
+    company: {
       type: String,
       required: true,
       trim: true,
     },
 
-    budget: {
-      type: Number,
-      required: true,
-    },
-
-    timeline: {
+    address: {
       type: String,
       required: true,
       trim: true,
@@ -36,7 +32,4 @@ const projectEnquirySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model(
-  "ProjectEnquiry",
-  projectEnquirySchema
-);
+module.exports = mongoose.model("Contact", contactSchema);

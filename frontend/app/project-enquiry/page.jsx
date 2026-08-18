@@ -1,268 +1,187 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import { useRouter } from "next/navigation";
+import "../contact/contact.css";
 
 export default function ProjectEnquiryPage() {
-  const [contactCompleted, setContactCompleted] = useState(false);
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     projectType: "",
+    description: "",
     budget: "",
     timeline: "",
-    description: "",
   });
 
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!contactCompleted) {
-      setMessage(
-        "Please complete your contact details first."
-      );
-      return;
-    }
-
     setLoading(true);
     setMessage("");
+    setError("");
 
     try {
-      const userId = "REPLACE_WITH_LOGGED_IN_USER_ID";
+      const token = localStorage.getItem("token");
 
-      const response = await axios.post(
+      if (!token) {
+        router.push("/login");
+        return;
+      }
+
+      const response = await fetch(
         "http://localhost:5000/api/project-enquiries",
         {
-          userId,
-          ...formData,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            projectType: formData.projectType,
+            description: formData.description,
+            budget: Number(formData.budget),
+            timeline: formData.timeline,
+          }),
         }
       );
 
-      setMessage(response.data.message);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.message ||
+            "Failed to submit project enquiry"
+        );
+      }
+
+      setMessage(
+        "Project enquiry submitted successfully."
+      );
 
       setFormData({
         projectType: "",
+        description: "",
         budget: "",
         timeline: "",
-        description: "",
       });
     } catch (error) {
-      setMessage(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again."
-      );
+      setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <main className="enquiry-page">
+    <main className="contact-page">
+      <div className="contact-container">
+        <h1>Project Enquiry</h1>
 
-      {/* Reserved Header/Navbar space */}
-      <div className="header-placeholder"></div>
+        <p className="contact-subtitle">
+          Tell us about your project.
+        </p>
 
-      <section className="enquiry-section">
-        <div className="enquiry-container">
+        {message && (
+          <div className="success-message">
+            {message}
+          </div>
+        )}
 
-          <div className="enquiry-heading">
-            <p className="eyebrow">
-              PROJECT ENQUIRY
-            </p>
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
 
-            <h1>
-              Let's discuss your project.
-            </h1>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="projectType">
+              Project Type
+            </label>
 
-            <p>
-              Tell us what you want to build and
-              we'll get back to you.
-            </p>
+            <input
+              id="projectType"
+              name="projectType"
+              type="text"
+              value={formData.projectType}
+              onChange={handleChange}
+              placeholder="e.g. Website Development"
+              required
+            />
           </div>
 
-          {!contactCompleted && (
-            <div className="contact-warning">
-              <p>
-                You need to complete your contact
-                details before submitting a project
-                enquiry.
-              </p>
+          <div className="form-group">
+            <label htmlFor="description">
+              Project Description
+            </label>
 
-              <a href="/contact">
-                Complete Contact Details →
-              </a>
-            </div>
-          )}
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Describe your project"
+              rows={6}
+              required
+            />
+          </div>
 
-          <form
-            className={`enquiry-form ${
-              !contactCompleted
-                ? "form-disabled"
-                : ""
-            }`}
-            onSubmit={handleSubmit}
+          <div className="form-group">
+            <label htmlFor="budget">
+              Budget
+            </label>
+
+            <input
+              id="budget"
+              name="budget"
+              type="number"
+              min="0"
+              value={formData.budget}
+              onChange={handleChange}
+              placeholder="Enter your budget"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="timeline">
+              Timeline
+            </label>
+
+            <input
+              id="timeline"
+              name="timeline"
+              type="text"
+              value={formData.timeline}
+              onChange={handleChange}
+              placeholder="e.g. 3 months"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
           >
-
-            <div className="form-group">
-              <label htmlFor="projectType">
-                Project Type
-              </label>
-
-              <select
-                id="projectType"
-                name="projectType"
-                value={formData.projectType}
-                onChange={handleChange}
-                disabled={!contactCompleted}
-                required
-              >
-                <option value="">
-                  Select project type
-                </option>
-
-                <option value="Website">
-                  Website
-                </option>
-
-                <option value="Web Application">
-                  Web Application
-                </option>
-
-                <option value="Mobile Application">
-                  Mobile Application
-                </option>
-
-                <option value="Software">
-                  Software
-                </option>
-
-                <option value="Other">
-                  Other
-                </option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="budget">
-                Estimated Budget
-              </label>
-
-              <select
-                id="budget"
-                name="budget"
-                value={formData.budget}
-                onChange={handleChange}
-                disabled={!contactCompleted}
-                required
-              >
-                <option value="">
-                  Select budget
-                </option>
-
-                <option value="Below ₹50,000">
-                  Below ₹50,000
-                </option>
-
-                <option value="₹50,000 - ₹1,00,000">
-                  ₹50,000 - ₹1,00,000
-                </option>
-
-                <option value="₹1,00,000 - ₹3,00,000">
-                  ₹1,00,000 - ₹3,00,000
-                </option>
-
-                <option value="₹3,00,000+">
-                  ₹3,00,000+
-                </option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="timeline">
-                Expected Timeline
-              </label>
-
-              <select
-                id="timeline"
-                name="timeline"
-                value={formData.timeline}
-                onChange={handleChange}
-                disabled={!contactCompleted}
-                required
-              >
-                <option value="">
-                  Select timeline
-                </option>
-
-                <option value="Less than 1 month">
-                  Less than 1 month
-                </option>
-
-                <option value="1 - 3 months">
-                  1 - 3 months
-                </option>
-
-                <option value="3 - 6 months">
-                  3 - 6 months
-                </option>
-
-                <option value="6+ months">
-                  6+ months
-                </option>
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="description">
-                Project Description
-              </label>
-
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Tell us about your project..."
-                rows={7}
-                disabled={!contactCompleted}
-                required
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={
-                !contactCompleted || loading
-              }
-            >
-              {loading
-                ? "Submitting..."
-                : "Submit Enquiry"}
-            </button>
-
-            {message && (
-              <p className="form-message">
-                {message}
-              </p>
-            )}
-
-          </form>
-
-        </div>
-      </section>
-
-      {/* Reserved Footer space */}
-      <div className="footer-placeholder"></div>
-
+            {loading
+              ? "Submitting..."
+              : "Submit Enquiry"}
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

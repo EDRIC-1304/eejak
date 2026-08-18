@@ -1,11 +1,13 @@
 const express = require("express");
 
 const {
-  createProjectEnquiry,
+  createEnquiry,
 } = require("../controllers/enquiryController");
+
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/", createProjectEnquiry);
+router.post("/", authMiddleware, createEnquiry);
 
 module.exports = router;
