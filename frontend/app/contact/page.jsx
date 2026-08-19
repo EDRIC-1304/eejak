@@ -1,6 +1,69 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+    setError("");
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/contact`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') : ''}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send message");
+      }
+
+      setMessage("Thank you! We've received your message and will get back to you soon.");
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -133,7 +196,19 @@ export default function Contact() {
                 back to you as soon as possible.
               </p>
 
-              <form className="mt-8 space-y-5">
+              {message && (
+                <div className="mt-6 rounded-lg bg-green-50 p-4 text-sm text-green-800 border border-green-200">
+                  {message}
+                </div>
+              )}
+
+              {error && (
+                <div className="mt-6 rounded-lg bg-red-50 p-4 text-sm text-red-800 border border-red-200">
+                  {error}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                 {/* Name */}
                 <div>
                   <label
@@ -147,7 +222,10 @@ export default function Contact() {
                     id="name"
                     name="name"
                     type="text"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Your name"
+                    required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
@@ -165,7 +243,10 @@ export default function Contact() {
                     id="email"
                     name="email"
                     type="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="you@example.com"
+                    required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
@@ -183,6 +264,8 @@ export default function Contact() {
                     id="phone"
                     name="phone"
                     type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
                     placeholder="+91 XXXXX XXXXX"
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -201,7 +284,10 @@ export default function Contact() {
                     id="subject"
                     name="subject"
                     type="text"
+                    value={formData.subject}
+                    onChange={handleChange}
                     placeholder="How can we help?"
+                    required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
@@ -219,7 +305,10 @@ export default function Contact() {
                     id="message"
                     name="message"
                     rows="5"
+                    value={formData.message}
+                    onChange={handleChange}
                     placeholder="Tell us about your requirements..."
+                    required
                     className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
@@ -227,9 +316,10 @@ export default function Contact() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 hover:shadow-lg"
+                  disabled={loading}
+                  className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 hover:shadow-lg disabled:bg-blue-400 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {loading ? "Sending Message..." : "Send Message"}
                 </button>
               </form>
             </div>

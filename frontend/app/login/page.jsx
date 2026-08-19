@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { auth } from "@/lib/api";
 import "./auth.css";
 
 export default function LoginPage() {
@@ -31,36 +32,21 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
-      }
+      const response = await auth.login(formData.email, formData.password);
 
       // Store JWT
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", response.data.token);
 
       // Store basic user information
       localStorage.setItem(
         "user",
-        JSON.stringify(data.user)
+        JSON.stringify(response.data.user)
       );
 
       // Redirect to home
       router.push("/");
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || error.message || "Login failed");
     } finally {
       setLoading(false);
     }
