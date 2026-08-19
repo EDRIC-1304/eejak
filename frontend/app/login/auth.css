@@ -74,6 +74,14 @@
   color: #b00020;
 }
 
+.success-message {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 6px;
+  background: #eafaf1;
+  color: #1d6f42;
+}
+
 .auth-switch {
   text-align: center;
   margin-top: 20px;

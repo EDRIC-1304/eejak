@@ -40,10 +40,16 @@ apiClient.interceptors.response.use(
 export const auth = {
   login: (email, password) =>
     apiClient.post('/auth/login', { email, password }),
-  
+
   signup: (name, email, password) =>
     apiClient.post('/auth/signup', { name, email, password }),
-  
+
+  forgotPassword: (email, newPassword) =>
+    apiClient.post('/auth/forgot-password', { email, newPassword }),
+
+  resetPassword: (email, newPassword) =>
+    apiClient.post('/auth/reset-password', { email, newPassword }),
+
   getCurrentUser: () =>
     apiClient.get('/auth/me'),
 };
