@@ -7,13 +7,18 @@ export const metadata = {
   description: "Modern digital solutions",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
         <Navbar />
 
-        <main style={{ paddingTop: "80px" }}>
+        <main className="pt-20">
           {children}
         </main>
 

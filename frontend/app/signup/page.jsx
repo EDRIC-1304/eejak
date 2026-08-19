@@ -26,6 +26,17 @@ export default function SignupPage() {
     }));
   };
 
+  const handleLoginLink = (e) => {
+    const returnTo = new URLSearchParams(window.location.search).get(
+      "returnTo"
+    );
+
+    if (returnTo === "/contact" || returnTo === "/project-enquiry") {
+      e.preventDefault();
+      window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,7 +53,15 @@ export default function SignupPage() {
         JSON.stringify(response.data.user)
       );
 
-      router.push("/");
+      const returnTo = new URLSearchParams(window.location.search).get(
+        "returnTo"
+      );
+      const destination =
+        returnTo === "/contact" || returnTo === "/project-enquiry"
+          ? returnTo
+          : "/";
+
+      router.push(destination);
     } catch (error) {
       setError(error.response?.data?.message || error.message || "Signup failed");
     } finally {
@@ -123,7 +142,12 @@ export default function SignupPage() {
 
         <p className="auth-switch">
           Already have an account?{" "}
-          <a href="/login">Login</a>
+          <a
+            href="/login"
+            onClick={handleLoginLink}
+          >
+            Login
+          </a>
         </p>
       </div>
     </main>

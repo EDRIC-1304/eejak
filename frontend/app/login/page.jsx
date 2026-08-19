@@ -25,6 +25,17 @@ export default function LoginPage() {
     }));
   };
 
+  const handleSignupLink = (e) => {
+    const returnTo = new URLSearchParams(window.location.search).get(
+      "returnTo"
+    );
+
+    if (returnTo === "/contact" || returnTo === "/project-enquiry") {
+      e.preventDefault();
+      window.location.href = `/signup?returnTo=${encodeURIComponent(returnTo)}`;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -115,7 +126,12 @@ export default function LoginPage() {
 
         <p className="auth-switch">
           Don't have an account?{" "}
-          <a href="/signup">Sign Up</a>
+          <a
+            href="/signup"
+            onClick={handleSignupLink}
+          >
+            Sign Up
+          </a>
         </p>
 
         <p className="auth-switch">

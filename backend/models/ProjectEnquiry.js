@@ -27,11 +27,16 @@ const projectEnquirySchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
+      validate: {
+        validator: (value) => value.length >= 15,
+        message: "Project description must contain at least 15 characters",
+      },
     },
 
     budget: {
       type: Number,
       required: true,
+      min: [1000, "Estimated budget must be at least 1000"],
     },
 
     timeline: {

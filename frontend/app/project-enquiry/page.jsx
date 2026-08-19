@@ -338,7 +338,6 @@ export default function ProjectEnquiryPage() {
                       id="budget"
                       name="budget"
                       type="number"
-                      min="0"
                       value={formData.budget}
                       onChange={handleChange}
                       placeholder="Enter your budget"

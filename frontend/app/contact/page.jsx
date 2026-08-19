@@ -283,6 +283,8 @@ export default function Contact() {
                     onChange={handleChange}
                     placeholder="Your name"
                     readOnly={isAuthenticated}
+                    minLength={2}
+                    maxLength={100}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -305,6 +307,7 @@ export default function Contact() {
                     onChange={handleChange}
                     placeholder="you@example.com"
                     readOnly={isAuthenticated}
+                    maxLength={254}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -326,6 +329,9 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+91 XXXXX XXXXX"
+                    minLength={10}
+                    maxLength={10}
+                    pattern="\\+?[0-9\\s().-]{7,20}"
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -347,6 +353,7 @@ export default function Contact() {
                     value={formData.company}
                     onChange={handleChange}
                     placeholder="Your company"
+                    maxLength={150}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -368,6 +375,7 @@ export default function Contact() {
                     value={formData.address}
                     onChange={handleChange}
                     placeholder="Your address"
+                    maxLength={300}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -389,6 +397,7 @@ export default function Contact() {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder="How can we help?"
+                    maxLength={200}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -410,6 +419,8 @@ export default function Contact() {
                     value={formData.message}
                     onChange={handleChange}
                     placeholder="Tell us about your requirements..."
+                    minLength={10}
+                    maxLength={5000}
                     required
                     className="w-full resize-none rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
