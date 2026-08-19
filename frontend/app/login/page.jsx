@@ -30,7 +30,7 @@ export default function LoginPage() {
       "returnTo"
     );
 
-    if (returnTo === "/contact" || returnTo === "/project-enquiry") {
+    if (returnTo === "/#contact" || returnTo === "/#project-enquiry") {
       e.preventDefault();
       window.location.href = `/signup?returnTo=${encodeURIComponent(returnTo)}`;
     }
@@ -58,7 +58,7 @@ export default function LoginPage() {
         "returnTo"
       );
       const destination =
-        returnTo === "/contact" || returnTo === "/project-enquiry"
+        returnTo === "/#contact" || returnTo === "/#project-enquiry"
           ? returnTo
           : "/";
 

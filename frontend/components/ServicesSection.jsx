@@ -45,27 +45,11 @@ export default function Services() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <>
 
       {/* Hero Section */}
       <section className="bg-white px-6 py-24">
         <div className="mx-auto max-w-6xl">
-
-          {/* Breadcrumb */}
-          <nav className="mb-4 text-sm text-gray-500">
-            <Link
-              href="/"
-              className="font-medium text-blue-600 hover:underline"
-            >
-              Home
-            </Link>
-
-            <span className="mx-2">/</span>
-
-            <span className="font-medium text-gray-900">
-              Services
-            </span>
-          </nav>
 
           {/* Company Name */}
           <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-600">
@@ -85,7 +69,7 @@ export default function Services() {
 
           <div className="mt-8">
             <Link
-              href="/contact"
+              href="/#contact"
               className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 hover:shadow-lg"
             >
               Discuss Your Requirements
@@ -269,29 +253,6 @@ export default function Services() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-blue-600 px-6 py-16">
-        <div className="mx-auto max-w-6xl text-center">
-
-          <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Have a Technology Requirement?
-          </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl text-blue-100">
-            Tell us what you are looking to build, improve, secure, or
-            maintain, and let's find the right solution for your business.
-          </p>
-
-          <Link
-            href="/contact"
-            className="mt-8 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-blue-600 transition hover:bg-gray-100 hover:shadow-lg"
-          >
-            Contact Us
-          </Link>
-
-        </div>
-      </section>
-
-    </main>
+    </>
   );
 }

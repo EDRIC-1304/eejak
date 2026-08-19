@@ -31,7 +31,7 @@ export default function SignupPage() {
       "returnTo"
     );
 
-    if (returnTo === "/contact" || returnTo === "/project-enquiry") {
+    if (returnTo === "/#contact" || returnTo === "/#project-enquiry") {
       e.preventDefault();
       window.location.href = `/login?returnTo=${encodeURIComponent(returnTo)}`;
     }
@@ -57,7 +57,7 @@ export default function SignupPage() {
         "returnTo"
       );
       const destination =
-        returnTo === "/contact" || returnTo === "/project-enquiry"
+        returnTo === "/#contact" || returnTo === "/#project-enquiry"
           ? returnTo
           : "/";
 

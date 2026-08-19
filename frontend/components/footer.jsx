@@ -25,19 +25,19 @@ export default function Footer() {
               Home
             </Link>
 
-            <Link href="/about" className="hover:text-white">
+            <Link href="/#about" className="hover:text-white">
               About
             </Link>
 
-            <Link href="/services" className="hover:text-white">
+            <Link href="/#services" className="hover:text-white">
               Services
             </Link>
 
-            <Link href="/project-enquiry" className="hover:text-white">
+            <Link href="/#project-enquiry" className="hover:text-white">
               Project Enquiry
             </Link>
 
-            <Link href="/contact" className="hover:text-white">
+            <Link href="/#contact" className="hover:text-white">
               Contact
             </Link>
           </div>

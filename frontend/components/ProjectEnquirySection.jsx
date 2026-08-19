@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { projectEnquiry } from "@/lib/api";
 
@@ -62,7 +61,7 @@ export default function ProjectEnquiryPage() {
 
       if (!token) {
         sessionStorage.setItem("projectEnquiryDraft", JSON.stringify(formData));
-        router.push("/login?returnTo=/project-enquiry");
+        router.push("/login?returnTo=%2F%23project-enquiry");
         return;
       }
 
@@ -98,27 +97,11 @@ export default function ProjectEnquiryPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <>
 
       {/* Hero Section */}
       <section className="bg-white px-6 py-24">
         <div className="mx-auto max-w-6xl">
-
-          {/* Breadcrumb */}
-          <nav className="mb-4 text-sm text-gray-500">
-            <Link
-              href="/"
-              className="font-medium text-blue-600 hover:underline"
-            >
-              Home
-            </Link>
-
-            <span className="mx-2">/</span>
-
-            <span className="font-medium text-gray-900">
-              Project Enquiry
-            </span>
-          </nav>
 
           {/* Company Name */}
           <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-600">
@@ -386,29 +369,6 @@ export default function ProjectEnquiryPage() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="bg-blue-600 px-6 py-16">
-        <div className="mx-auto max-w-6xl text-center">
-
-          <h2 className="text-3xl font-bold text-white md:text-4xl">
-            Have a Project in Mind?
-          </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl text-blue-100">
-            Share your requirements with us and let's explore how Eejak
-            Technologies can help bring your idea to life.
-          </p>
-
-          <Link
-            href="/contact"
-            className="mt-8 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-blue-600 transition hover:bg-gray-100 hover:shadow-lg"
-          >
-            Contact Us
-          </Link>
-
-        </div>
-      </section>
-
-    </main>
+    </>
   );
 }
