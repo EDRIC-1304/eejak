@@ -1,12 +1,20 @@
-const Contact = require("../models/Contact");
+const Contact = require("../models/contact");
 
 const updateContactDetails = async (req, res) => {
   try {
-    const { phone, company, address } = req.body;
+    const {
+      name,
+      email,
+      phone,
+      company,
+      address,
+      subject,
+      message,
+    } = req.body;
 
-    if (!phone || !company || !address) {
+    if (!name || !email || !phone || !company || !address || !subject || !message) {
       return res.status(400).json({
-        message: "Phone, company and address are required",
+        message: "Name, email, phone, company, address, subject and message are required",
       });
     }
 
@@ -14,9 +22,13 @@ const updateContactDetails = async (req, res) => {
       { userId: req.userId },
       {
         userId: req.userId,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
         phone: phone.trim(),
         company: company.trim(),
         address: address.trim(),
+        subject: subject.trim(),
+        message: message.trim(),
       },
       {
         new: true,
@@ -32,9 +44,33 @@ const updateContactDetails = async (req, res) => {
   } catch (error) {
     console.error("Contact update error:", error);
 
-    return res.status(500).json({
-      message: "Failed to save contact details",
-    });
+    if (error.name === "ValidationError") {
+      const fieldLabels = {
+        name: "Name",
+        email: "Email",
+        phone: "Phone",
+        company: "Company",
+        address: "Address",
+        subject: "Subject",
+        message: "Message",
+      };
+
+      return res.status(400).json({
+        message: Object.values(error.errors)
+          .map((validationError) => {
+            const cleanMessage = validationError.message.replace(
+              /^Path `[^`]+` /,
+              ""
+            );
+            const fieldLabel = fieldLabels[validationError.path] || validationError.path;
+
+            return `${fieldLabel} ${cleanMessage}`;
+          })
+          .join("\n"),
+      });
+    }
+
+    return res.status(500).json({ message: "Failed to save contact details" });
   }
 };
 

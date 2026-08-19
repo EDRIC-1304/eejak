@@ -4,6 +4,7 @@ const createEnquiry = async (req, res) => {
   try {
     const {
       projectType,
+      customRequest,
       description,
       budget,
       timeline,
@@ -13,17 +14,21 @@ const createEnquiry = async (req, res) => {
       !projectType ||
       !description ||
       budget === undefined ||
-      !timeline
+      !timeline ||
+      (projectType === "Custom Requirement" && !customRequest)
     ) {
       return res.status(400).json({
         message:
-          "Project ID, project type, description, budget and timeline are required",
+          projectType === "Custom Requirement" && !customRequest
+            ? "Custom requirement is required"
+            : "Project type, description, budget and timeline are required",
       });
     }
 
     const enquiry = await ProjectEnquiry.create({
       userId: req.userId,
       projectType: projectType.trim(),
+      customRequest: customRequest ? customRequest.trim() : undefined,
       description: description.trim(),
       budget,
       timeline: timeline.trim(),

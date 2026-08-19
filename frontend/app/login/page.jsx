@@ -43,8 +43,15 @@ export default function LoginPage() {
         JSON.stringify(response.data.user)
       );
 
-      // Redirect to home
-      router.push("/");
+      const returnTo = new URLSearchParams(window.location.search).get(
+        "returnTo"
+      );
+      const destination =
+        returnTo === "/contact" || returnTo === "/project-enquiry"
+          ? returnTo
+          : "/";
+
+      router.push(destination);
     } catch (error) {
       setError(error.response?.data?.message || error.message || "Login failed");
     } finally {

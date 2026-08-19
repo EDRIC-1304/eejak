@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { projectEnquiry } from "@/lib/api";
 
 export default function ProjectEnquiryPage() {
@@ -10,6 +10,7 @@ export default function ProjectEnquiryPage() {
 
   const [formData, setFormData] = useState({
     projectType: "",
+    customRequest: "",
     description: "",
     budget: "",
     timeline: "",
@@ -18,6 +19,27 @@ export default function ProjectEnquiryPage() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isDraftLoaded, setIsDraftLoaded] = useState(false);
+
+  useEffect(() => {
+    const savedDraft = sessionStorage.getItem("projectEnquiryDraft");
+
+    if (savedDraft) {
+      try {
+        setFormData((prev) => ({ ...prev, ...JSON.parse(savedDraft) }));
+      } catch {
+        sessionStorage.removeItem("projectEnquiryDraft");
+      }
+    }
+
+    setIsDraftLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isDraftLoaded) {
+      sessionStorage.setItem("projectEnquiryDraft", JSON.stringify(formData));
+    }
+  }, [formData, isDraftLoaded]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -39,12 +61,17 @@ export default function ProjectEnquiryPage() {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        router.push("/login");
+        sessionStorage.setItem("projectEnquiryDraft", JSON.stringify(formData));
+        router.push("/login?returnTo=/project-enquiry");
         return;
       }
 
       await projectEnquiry.createEnquiry({
         projectType: formData.projectType,
+        customRequest:
+          formData.projectType === "Custom Requirement"
+            ? formData.customRequest.trim()
+            : "",
         description: formData.description,
         budget: Number(formData.budget),
         timeline: formData.timeline,
@@ -54,6 +81,7 @@ export default function ProjectEnquiryPage() {
 
       setFormData({
         projectType: "",
+        customRequest: "",
         description: "",
         budget: "",
         timeline: "",
@@ -229,16 +257,48 @@ export default function ProjectEnquiryPage() {
                     Project Type
                   </label>
 
-                  <input
+                  <select
                     id="projectType"
                     name="projectType"
-                    type="text"
                     value={formData.projectType}
                     onChange={handleChange}
-                    placeholder="e.g. Website Development"
                     required
-                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                  />
+                    className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  >
+                    <option value="" disabled>
+                      Select a project type
+                    </option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="Software Development">
+                      Software Development
+                    </option>
+                    <option value="Mobile App Development">
+                      Mobile App Development
+                    </option>
+                    <option value="UI/UX Design">UI/UX Design</option>
+                    <option value="Cloud Solutions">Cloud Solutions</option>
+                    <option value="Digital Solutions">Digital Solutions</option>
+                    <option value="Support & Maintenance">
+                      Support &amp; Maintenance
+                    </option>
+                    <option value="IT Consulting">IT Consulting</option>
+                    <option value="Custom Requirement">
+                      Custom Requirement
+                    </option>
+                  </select>
+
+                  {formData.projectType === "Custom Requirement" && (
+                    <input
+                      id="customRequest"
+                      name="customRequest"
+                      type="text"
+                      value={formData.customRequest}
+                      onChange={handleChange}
+                      placeholder="Describe your custom requirement"
+                      required
+                      className="mt-4 w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    />
+                  )}
                 </div>
 
                 {/* Description */}

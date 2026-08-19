@@ -14,6 +14,15 @@ const projectEnquirySchema = new mongoose.Schema(
       trim: true,
     },
 
+    customRequest: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+      required: function () {
+        return this.projectType === "Custom Requirement";
+      },
+    },
+
     description: {
       type: String,
       required: true,

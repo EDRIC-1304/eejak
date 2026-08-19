@@ -1,20 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { auth, contact } from "@/lib/api";
 
 export default function Contact() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
+    company: "",
+    address: "",
     subject: "",
     message: "",
   });
 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isDraftLoaded, setIsDraftLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const savedDraft = sessionStorage.getItem("contactFormDraft");
+
+    if (savedDraft) {
+      try {
+        setFormData((prev) => ({ ...prev, ...JSON.parse(savedDraft) }));
+      } catch {
+        sessionStorage.removeItem("contactFormDraft");
+      }
+    }
+
+    setIsDraftLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (isDraftLoaded) {
+      sessionStorage.setItem("contactFormDraft", JSON.stringify(formData));
+    }
+  }, [formData, isDraftLoaded]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+
+    if (!token) {
+      return;
+    }
+
+    const populateUser = async () => {
+      try {
+        const response = await auth.getCurrentUser();
+        const user = response.data.user;
+
+        setIsAuthenticated(true);
+        setFormData((prev) => ({
+          ...prev,
+          name: user.name || "",
+          email: user.email || "",
+        }));
+      } catch (error) {
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          setFormData((prev) => ({
+            ...prev,
+            name: user.name || "",
+            email: user.email || "",
+          }));
+          setIsAuthenticated(true);
+        }
+      }
+    };
+
+    populateUser();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,34 +94,28 @@ export default function Contact() {
     setError("");
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/contact`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${typeof window !== 'undefined' ? localStorage.getItem('token') : ''}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const token = localStorage.getItem("token");
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to send message");
+      if (!token) {
+        sessionStorage.setItem("contactFormDraft", JSON.stringify(formData));
+        router.push("/login?returnTo=/contact");
+        return;
       }
+
+      await contact.updateContactDetails(formData);
 
       setMessage("Thank you! We've received your message and will get back to you soon.");
       setFormData({
-        name: "",
-        email: "",
+        name: isAuthenticated ? formData.name : "",
+        email: isAuthenticated ? formData.email : "",
         phone: "",
+        company: "",
+        address: "",
         subject: "",
         message: "",
       });
     } catch (error) {
-      setError(error.message);
+      setError(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
@@ -203,7 +260,7 @@ export default function Contact() {
               )}
 
               {error && (
-                <div className="mt-6 rounded-lg bg-red-50 p-4 text-sm text-red-800 border border-red-200">
+                <div className="mt-6 whitespace-pre-line rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
                   {error}
                 </div>
               )}
@@ -225,6 +282,7 @@ export default function Contact() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Your name"
+                    readOnly={isAuthenticated}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -246,6 +304,7 @@ export default function Contact() {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="you@example.com"
+                    readOnly={isAuthenticated}
                     required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
@@ -267,6 +326,49 @@ export default function Contact() {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+91 XXXXX XXXXX"
+                    required
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
+                </div>
+
+                {/* Company */}
+                <div>
+                  <label
+                    htmlFor="company"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Company
+                  </label>
+
+                  <input
+                    id="company"
+                    name="company"
+                    type="text"
+                    value={formData.company}
+                    onChange={handleChange}
+                    placeholder="Your company"
+                    required
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  />
+                </div>
+
+                {/* Address */}
+                <div>
+                  <label
+                    htmlFor="address"
+                    className="mb-2 block text-sm font-medium text-gray-700"
+                  >
+                    Address
+                  </label>
+
+                  <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="Your address"
+                    required
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>
@@ -317,7 +419,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 hover:shadow-lg disabled:bg-blue-400 disabled:cursor-not-allowed"
+                  className="w-full cursor-pointer rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-blue-400"
                 >
                   {loading ? "Sending Message..." : "Send Message"}
                 </button>
