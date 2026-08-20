@@ -127,10 +127,10 @@ export default function Navbar() {
 
   const navLinkClass = scrolled
     ? "font-medium underline decoration-transparent decoration-2 underline-offset-8 transition hover:text-blue-600 hover:decoration-blue-600 focus-visible:text-blue-600 focus-visible:decoration-blue-600"
-    : "font-medium underline decoration-transparent decoration-2 underline-offset-8 transition hover:text-white hover:decoration-cyan-300 focus-visible:text-white focus-visible:decoration-cyan-300";
+    : "font-medium underline decoration-transparent decoration-2 underline-offset-8 text-gray-900 drop-shadow-sm transition hover:text-blue-700 hover:decoration-cyan-500 focus-visible:text-blue-700 focus-visible:decoration-cyan-500";
   const mobileNavLinkClass = scrolled
     ? "rounded-lg px-3 py-3 font-medium underline decoration-transparent decoration-2 underline-offset-4 transition hover:bg-blue-50 hover:text-blue-600 hover:decoration-blue-600 focus-visible:text-blue-600 focus-visible:decoration-blue-600"
-    : "rounded-lg px-3 py-3 font-medium underline decoration-transparent decoration-2 underline-offset-4 transition hover:bg-white/10 hover:text-white hover:decoration-cyan-300 focus-visible:text-white focus-visible:decoration-cyan-300";
+    : "rounded-lg px-3 py-3 font-medium underline decoration-transparent decoration-2 underline-offset-4 text-gray-900 drop-shadow-sm transition hover:bg-white/50 hover:text-blue-700 hover:decoration-cyan-500 focus-visible:text-blue-700 focus-visible:decoration-cyan-500";
 
   const getNavLinkClass = (section, mobile = false) => {
     const baseClass = mobile ? mobileNavLinkClass : navLinkClass;
@@ -138,29 +138,32 @@ export default function Navbar() {
     if (activeSection === section) {
       return scrolled
         ? `${baseClass} !text-blue-600 !decoration-blue-600`
-        : `${baseClass} !text-cyan-300 !decoration-cyan-300`;
+        : `${baseClass} !text-blue-700 !decoration-cyan-500`;
     }
 
     return scrolled
       ? `${baseClass} !text-gray-900 !decoration-transparent`
-      : `${baseClass} !text-blue-100 !decoration-transparent`;
+      : `${baseClass} !text-gray-900 !decoration-transparent`;
   };
 
   return (
-    <nav className="fixed left-0 top-0 z-50 w-full bg-transparent">
+    <nav
+      className={`fixed left-0 top-0 z-50 w-full transition-colors duration-300 ${
+        scrolled
+          ? "bg-white/95 shadow-sm backdrop-blur-md"
+          : "bg-transparent"
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6">
 
-        {/* Logo — note: if this mark is dark-colored, it will be low-contrast in the
-            transparent state; a light/white logo variant swapped in on !scrolled
-            would match the rest of this treatment. */}
         <Link href="/" className="shrink-0">
           <Image
-            src="/eejak_technologies_logo.png"
+            src="/eejak.png"
             alt="EEJAK Logo"
             width={150}
             height={50}
             priority
-            className="h-auto w-auto"
+            className="h-auto w-auto drop-shadow-sm"
           />
         </Link>
 
