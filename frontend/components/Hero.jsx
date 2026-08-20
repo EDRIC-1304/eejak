@@ -25,8 +25,6 @@ export default function Hero() {
         }
       `}</style>
 
-      {/* ~10% blue accent, concentrated top-right — the one saturated area against
-          the otherwise white section */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
